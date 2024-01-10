@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
-import ua.org.shpp.todolist.Status;
+import ua.org.shpp.todolist.enums.Status;
 import ua.org.shpp.todolist.dto.TaskConciseDTO;
 import ua.org.shpp.todolist.repository.TaskRepository;
 

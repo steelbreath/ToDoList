@@ -1,6 +1,6 @@
 package ua.org.shpp.todolist.dto;
 
-import ua.org.shpp.todolist.Status;
+import ua.org.shpp.todolist.enums.Status;
 
 import java.time.LocalDateTime;
 

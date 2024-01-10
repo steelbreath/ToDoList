@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({IllegalStatusChangeException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorMessage handleIllegalStatusChangeException(TaskNotFoundException ex, WebRequest request) {
+    public ErrorMessage handleIllegalStatusChangeException(IllegalStatusChangeException ex, WebRequest request) {
         return new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 LocalDateTime.now(),

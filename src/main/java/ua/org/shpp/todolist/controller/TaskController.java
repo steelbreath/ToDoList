@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/tasks", produces = "application/json")
-@Tag(name = "Task operations", description = "Realizes crud operations.")
+@SecurityRequirement(name = "security")
+@Tag(name = "Task operations", description = "Realizes crud operations with Task object.")
 @ApiResponse(responseCode = "200", description = "OK", content = {@Content(schema = @Schema(implementation = TaskDTO.class), mediaType = "application/json")})
 @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content(schema = @Schema())})
 public class TaskController {
@@ -32,7 +34,7 @@ public class TaskController {
     }
 
     @Operation(
-            summary = "Create task and add to database",
+            summary = "Create task",
             description = "Create Task object specifying status, description and deadline. The response is TaskDTO object with id, status, description, created at and deadline.")
     @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(schema = @Schema(implementation = ErrorMessage.class), mediaType = "application/json")})
     @PostMapping
@@ -73,7 +75,7 @@ public class TaskController {
             description = "Retrieve all Task from database. You can specify quantity of tasks on one page and sort them by any parameter. The response is List of TaskDTO objects with id, status, description, created at and deadline.")
     @ApiResponse(responseCode = "204", description = "No Content", content = {@Content(schema = @Schema())})
     @GetMapping()
-    public ResponseEntity<List<TaskDTO>> getAllTask(@ParameterObject Pageable pageable){
-        return taskService.getAllTask(pageable);
+    public ResponseEntity<List<TaskDTO>> getAllTasks(@ParameterObject Pageable pageable){
+        return taskService.getAllTasks(pageable);
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ua.org.shpp.todolist.Status;
+import ua.org.shpp.todolist.enums.Status;
 import ua.org.shpp.todolist.dto.TaskConciseDTO;
 import ua.org.shpp.todolist.dto.TaskDTO;
 import ua.org.shpp.todolist.entity.TaskEntity;
@@ -69,7 +69,7 @@ public class TaskService {
         taskEntity.setDescription(task.getDescription());
     }
 
-    public ResponseEntity<List<TaskDTO>> getAllTask(Pageable pageable) {
+    public ResponseEntity<List<TaskDTO>> getAllTasks(Pageable pageable) {
         Page<TaskEntity> page = taskRepository.findAll(pageable);
         List<TaskDTO> tasks = page.map(taskEntity -> modelMapper.map(taskEntity, TaskDTO.class)).getContent();
         if (tasks.isEmpty()){

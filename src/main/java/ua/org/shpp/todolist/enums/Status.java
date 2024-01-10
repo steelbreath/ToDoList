@@ -1,4 +1,4 @@
-package ua.org.shpp.todolist;
+package ua.org.shpp.todolist.enums;
 
 public enum Status {
     PLANNED(1),
