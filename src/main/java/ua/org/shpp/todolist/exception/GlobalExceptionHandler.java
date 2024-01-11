@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class GlobalExceptionHandler {
     @ExceptionHandler({TaskNotFoundException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ErrorMessage handleUserNotFoundException(TaskNotFoundException ex, WebRequest request) {
+    public ErrorMessage handleTaskNotFoundException(TaskNotFoundException ex, WebRequest request) {
         return new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
                 LocalDateTime.now(),
@@ -20,9 +20,29 @@ public class GlobalExceptionHandler {
                 request.getDescription(false));
     }
 
-    @ExceptionHandler({IllegalStatusChangeException.class})
+    @ExceptionHandler({UserNotFoundException.class})
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ErrorMessage handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now(),
+                ex.getMessage(),
+                request.getDescription(false));
+    }
+
+    @ExceptionHandler({IllegalDataChangeException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorMessage handleIllegalStatusChangeException(IllegalStatusChangeException ex, WebRequest request) {
+    public ErrorMessage handleIllegalStatusChangeException(IllegalDataChangeException ex, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now(),
+                ex.getMessage(),
+                request.getDescription(false));
+    }
+
+    @ExceptionHandler({UsernameAlreadyExistException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleUsernameAlreadyExistException(UsernameAlreadyExistException ex, WebRequest request) {
         return new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 LocalDateTime.now(),

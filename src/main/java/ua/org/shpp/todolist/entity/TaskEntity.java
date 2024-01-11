@@ -16,15 +16,18 @@ public class TaskEntity {
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime deadline;
+    @ManyToOne
+    private UserEntity userEntity;
 
     public TaskEntity(){}
 
-    public TaskEntity(Long id, Status status, String description, LocalDateTime deadline) {
+    public TaskEntity(Long id, Status status, String description, LocalDateTime createdAt, LocalDateTime deadline, UserEntity userEntity) {
         this.id = id;
         this.status = status;
         this.description = description;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = createdAt;
         this.deadline = deadline;
+        this.userEntity = userEntity;
     }
 
     public Long getId() {
@@ -65,6 +68,14 @@ public class TaskEntity {
 
     public void setDeadline(LocalDateTime deadline) {
         this.deadline = deadline;
+    }
+
+    public UserEntity getUserEntity() {
+        return userEntity;
+    }
+
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 
     @Override

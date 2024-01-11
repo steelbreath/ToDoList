@@ -2,34 +2,28 @@ package ua.org.shpp.todolist.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "users")
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String username;
     private String password;
 
     private String roles;
+    @OneToMany
+    private List<TaskEntity> tasks;
 
     public UserEntity() {
     }
 
-    public UserEntity(Long id, String firstname, String lastname, String username, String password) {
-        this.id = id;
+    public UserEntity(String username, String password, String roles, List<TaskEntity> tasks) {
         this.username = username;
         this.password = password;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.roles = roles;
+        this.tasks = tasks;
     }
 
     public String getUsername() {
@@ -56,17 +50,24 @@ public class UserEntity {
         this.roles = roles;
     }
 
+    public List<TaskEntity> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<TaskEntity> tasks) {
+        this.tasks = tasks;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserEntity that = (UserEntity) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(username, that.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(username);
     }
-
 }
