@@ -4,11 +4,11 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class UserConciseDTO {
-    @Size(min = 3, max = 20, message = "Username must contain from 3 to 20 symbols")
-    @Pattern(regexp = "[a-zA-Z0-9]+")
+    @Size(min = 3, max = 20, message = "{user.invalid.size.username}")
+    @Pattern(regexp = "[a-zA-Z0-9]+", message = "{user.invalid.pattern.username}")
     private String username;
-    @Size(min = 3, max = 20, message = "Password must contain from 3 to 20 symbols")
-    @Pattern(regexp = "[a-zA-Z0-9]+")
+    @Size(min = 3, max = 20, message = "{user.invalid.size.password}")
+    @Pattern(regexp = "[a-zA-Z0-9]+", message = "{user.invalid.pattern.password}")
     private String password;
 
     public UserConciseDTO() {

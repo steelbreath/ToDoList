@@ -24,6 +24,6 @@ public class UserDetailsModelService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserEntity> user = userRepository.findByUsername(username);
-        return user.map(UserDetailsModel::new).orElseThrow(() -> new UsernameNotFoundException("Invalid username!"));
+        return user.map(UserDetailsModel::new).orElseThrow(() -> new UsernameNotFoundException("user.invalid.username"));
     }
 }

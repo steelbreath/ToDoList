@@ -2,7 +2,7 @@ package ua.org.shpp.todolist.exception;
 
 public class TaskNotFoundException extends RuntimeException{
     public TaskNotFoundException() {
-        super("Task with this id not found!");
+        super("task.notfound.error");
     }
 
     public TaskNotFoundException(String message) {

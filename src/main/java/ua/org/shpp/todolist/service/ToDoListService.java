@@ -21,7 +21,6 @@ import ua.org.shpp.todolist.exception.UsernameAlreadyExistException;
 import ua.org.shpp.todolist.repository.TaskRepository;
 import ua.org.shpp.todolist.repository.UserRepository;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +40,7 @@ public class ToDoListService {
     public ResponseEntity<UserDTO> signUp(UserConciseDTO userConciseDTO) {
         Optional<UserEntity> exist = userRepository.findByUsername(userConciseDTO.getUsername());
         if (exist.isPresent()) {
-            throw new UsernameAlreadyExistException("User with such username has already exist.");
+            throw new UsernameAlreadyExistException("username.already.existed");
         }
         UserEntity userEntity = modelMapper.map(userConciseDTO, UserEntity.class);
         if (userConciseDTO.getUsername().equals("admin") && userConciseDTO.getPassword().equals("admin")) {
@@ -70,7 +69,7 @@ public class ToDoListService {
         UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(UserNotFoundException::new);
         if (!username.equals(userConciseDTO.getUsername())) {
-            throw new IllegalDataChangeException("You can't change your username");
+            throw new IllegalDataChangeException("user.not.allowed.change.username");
         }
         userEntity.setUsername(userConciseDTO.getUsername());
         userEntity.setPassword(userConciseDTO.getPassword());
@@ -103,7 +102,7 @@ public class ToDoListService {
         TaskEntity taskEntity = taskRepository.findById(id)
                 .orElseThrow(TaskNotFoundException::new);
         if (!taskEntity.getUserEntity().equals(userEntity)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can't get another user task!", null);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "user.not.allowed.get.someones.task", null);
         }
         return ResponseEntity.ok(modelMapper.map(taskEntity, TaskDTO.class));
     }
@@ -112,7 +111,7 @@ public class ToDoListService {
         TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
         UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         if (!taskEntity.getUserEntity().equals(userEntity)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can't delete another user task!", null);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "user.not.allowed.delete.someones.task", null);
         }
         taskRepository.deleteById(id);
     }
@@ -121,7 +120,7 @@ public class ToDoListService {
         TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
         UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         if (!taskEntity.getUserEntity().equals(userEntity)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can't update another user task!", null);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "user.not.allowed.update.someones.task", null);
         }
         update(taskEntity, task);
         TaskDTO taskDTO = modelMapper.map(taskRepository.save(taskEntity), TaskDTO.class);
@@ -131,8 +130,10 @@ public class ToDoListService {
     private void update(TaskEntity taskEntity, TaskConciseDTO task) {
         Status toUpdate = task.getStatus();
         if (!Status.CONNECTIONS[taskEntity.getStatus().getRowCol()][toUpdate.getRowCol()]) {
-            throw new IllegalDataChangeException("You can't change task status from "
-                    + taskEntity.getStatus() + " to " + toUpdate + "!");
+            String first = "user.not.allowed.change.task.status";
+            String second = "to.part";
+            throw new IllegalDataChangeException(first
+                    + taskEntity.getStatus() + second + toUpdate + "!");
         }
         taskEntity.setStatus(toUpdate);
         taskEntity.setDeadline(task.getDeadline());
