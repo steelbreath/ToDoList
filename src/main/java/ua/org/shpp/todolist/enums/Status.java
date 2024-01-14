@@ -1,13 +1,13 @@
 package ua.org.shpp.todolist.enums;
 
 public enum Status {
-    PLANNED(1),
-    WORK_IN_PROGRESS(2),
-    POSTPONED(3),
-    NOTIFIED(4),
-    SIGNED(5),
-    DONE(6),
-    CANCELLED(7);
+    PLANNED(0),
+    WORK_IN_PROGRESS(1),
+    POSTPONED(2),
+    NOTIFIED(3),
+    SIGNED(4),
+    DONE(5),
+    CANCELLED(6);
 
     public static final boolean[][] CONNECTIONS = {
             {true,true,true,true,true,true,true},

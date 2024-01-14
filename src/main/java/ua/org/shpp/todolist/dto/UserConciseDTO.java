@@ -3,6 +3,8 @@ package ua.org.shpp.todolist.dto;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.util.StringJoiner;
+
 public class UserConciseDTO {
     @Size(min = 3, max = 20, message = "{user.invalid.size.username}")
     @Pattern(regexp = "[a-zA-Z0-9]+", message = "{user.invalid.pattern.username}")
@@ -33,5 +35,13 @@ public class UserConciseDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", UserConciseDTO.class.getSimpleName() + "[", "]")
+                .add("username='" + username + "'")
+                .add("password='" + password + "'")
+                .toString();
     }
 }

@@ -23,7 +23,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             return new UsernamePasswordAuthenticationToken(userDetails.getUsername(),
                     userDetails.getPassword(),userDetails.getAuthorities());
         }catch (UsernameNotFoundException e){
-            throw new BadCredentialsException("Invalid credentials!");
+            throw new BadCredentialsException("user.invalid.credentials");
         }
     }
 

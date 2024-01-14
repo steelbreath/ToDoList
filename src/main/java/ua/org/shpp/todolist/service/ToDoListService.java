@@ -71,7 +71,6 @@ public class ToDoListService {
         if (!username.equals(userConciseDTO.getUsername())) {
             throw new IllegalDataChangeException("user.not.allowed.change.username");
         }
-        userEntity.setUsername(userConciseDTO.getUsername());
         userEntity.setPassword(userConciseDTO.getPassword());
         UserDTO userDTO = modelMapper.map(userRepository.save(userEntity), UserDTO.class);
         return ResponseEntity.ok(userDTO);
@@ -108,8 +107,8 @@ public class ToDoListService {
     }
 
     public void deleteTask(String username, Long id) {
-        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
         UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
         if (!taskEntity.getUserEntity().equals(userEntity)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "user.not.allowed.delete.someones.task", null);
         }
@@ -117,8 +116,8 @@ public class ToDoListService {
     }
 
     public ResponseEntity<TaskDTO> updateTask(String username, Long id, TaskConciseDTO task) {
-        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
         UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
         if (!taskEntity.getUserEntity().equals(userEntity)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "user.not.allowed.update.someones.task", null);
         }
