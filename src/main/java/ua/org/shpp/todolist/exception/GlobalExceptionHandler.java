@@ -27,8 +27,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({TaskNotFoundException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ResponseEntity<ProblemDetail> handleTaskNotFoundException(TaskNotFoundException ex, WebRequest request) {
-        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,
-                messageSource.getMessage(ex.getMessage(), null, LocaleContextHolder.getLocale()));
+        String s = messageSource.getMessage(ex.getMessage(), null, LocaleContextHolder.getLocale());
+        s = s.replace("{id}", ex.getId().toString());
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, s);
         detail.setInstance(URI.create(request.getDescription(false)));
         detail.setProperty("timestamp", LocalDateTime.now());
         return ResponseEntity.of(detail).build();
@@ -37,8 +38,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({UserNotFoundException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ResponseEntity<ProblemDetail> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
-        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,
-                messageSource.getMessage(ex.getMessage(), null, LocaleContextHolder.getLocale()));
+        String s = messageSource.getMessage(ex.getMessage(), null, LocaleContextHolder.getLocale());
+        s = s.replace("{username}", ex.getUsername());
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, s);
         detail.setInstance(URI.create(request.getDescription(false)));
         detail.setProperty("timestamp", LocalDateTime.now());
         return ResponseEntity.of(detail).build();
@@ -47,8 +49,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({IllegalDataChangeException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<ProblemDetail> handleIllegalStatusChangeException(IllegalDataChangeException ex, WebRequest request) {
-        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
-                messageSource.getMessage(ex.getMessage(), null, LocaleContextHolder.getLocale()));
+        String s = messageSource.getMessage(ex.getMessage(), null, LocaleContextHolder.getLocale());
+        if (ex.getCurrent() != null) {
+            s = s + ex.getCurrent() + " -> " + ex.getToUpdate() + "!";
+        }
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, s);
         detail.setInstance(URI.create(request.getDescription(false)));
         detail.setProperty("timestamp", LocalDateTime.now());
         return ResponseEntity.of(detail).build();
@@ -57,8 +62,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({UsernameAlreadyExistException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<ProblemDetail> handleUsernameAlreadyExistException(UsernameAlreadyExistException ex, WebRequest request) {
-        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
-                messageSource.getMessage(ex.getMessage(), null, LocaleContextHolder.getLocale()));
+        String s = messageSource.getMessage(ex.getMessage(), null, LocaleContextHolder.getLocale());
+        s = s.replace("{username}", ex.getUsername());
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, s);
         detail.setInstance(URI.create(request.getDescription(false)));
         detail.setProperty("timestamp", LocalDateTime.now());
         return ResponseEntity.of(detail).build();

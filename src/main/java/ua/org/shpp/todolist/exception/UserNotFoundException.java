@@ -1,11 +1,18 @@
 package ua.org.shpp.todolist.exception;
 
 public class UserNotFoundException extends RuntimeException {
+
+    private String username;
+
     public UserNotFoundException() {
-        super("user.notfound.error");
     }
 
-    public UserNotFoundException(String message) {
-        super(message);
+    public UserNotFoundException(String username) {
+        super("user.notfound.error");
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

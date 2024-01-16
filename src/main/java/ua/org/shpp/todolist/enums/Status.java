@@ -1,30 +1,23 @@
 package ua.org.shpp.todolist.enums;
 
+import java.util.Set;
+
 public enum Status {
-    PLANNED(0),
-    WORK_IN_PROGRESS(1),
-    POSTPONED(2),
-    NOTIFIED(3),
-    SIGNED(4),
-    DONE(5),
-    CANCELLED(6);
+    PLANNED,
+    WORK_IN_PROGRESS,
+    POSTPONED,
+    NOTIFIED,
+    SIGNED,
+    DONE,
+    CANCELLED;
 
-    public static final boolean[][] CONNECTIONS = {
-            {true,true,true,true,true,true,true},
-            {false,true,true,true,true,true,true},
-            {false,true,true,true,true,true,true},
-            {false,false,false,true,true,true,true},
-            {false,false,false,true,true,true,true},
-            {false,false,false,false,false,true,false},
-            {false,false,false,false,false,false,true}
-    };
-    private final int rowCol;
-
-    Status(int rowCol) {
-        this.rowCol = rowCol;
-    }
-
-    public int getRowCol() {
-        return rowCol;
+    public static Set<Status> getAllowedStatuses(Status status){
+        return switch (status){
+            case PLANNED -> Set.of(PLANNED,WORK_IN_PROGRESS,POSTPONED,CANCELLED);
+            case WORK_IN_PROGRESS, POSTPONED -> Set.of(WORK_IN_PROGRESS,POSTPONED,NOTIFIED,SIGNED,CANCELLED);
+            case NOTIFIED, SIGNED -> Set.of(NOTIFIED,SIGNED,DONE,CANCELLED);
+            case DONE -> Set.of(DONE);
+            case CANCELLED -> Set.of(CANCELLED);
+        };
     }
 }

@@ -1,25 +1,22 @@
 package ua.org.shpp.todolist;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import ua.org.shpp.todolist.dto.UserConciseDTO;
 import ua.org.shpp.todolist.entity.UserEntity;
 import ua.org.shpp.todolist.exception.UserNotFoundException;
 import ua.org.shpp.todolist.repository.TaskRepository;
 import ua.org.shpp.todolist.repository.UserRepository;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -40,11 +37,41 @@ class ToDoListApplicationTests {
     @Autowired
     private TaskRepository taskRepository;
 
+//    @BeforeEach
+//    void setUp() throws Exception {
+//        mvc.perform(post("/users/sign-up")
+//                        .contentType("application/json")
+//                        .content("""
+//                                 {
+//                                 "username": "bob",
+//                                 "password": "bob"
+//                                 }
+//                                 """))
+//                .andExpect(status().isOk());
+//        mvc.perform(post("/users/sign-up")
+//                        .contentType("application/json")
+//                        .content("""
+//                                 {
+//                                 "username": "admin",
+//                                 "password": "admin"
+//                                 }
+//                                 """))
+//                .andExpect(status().isOk());
+//    }
+//
+//    @AfterEach
+//    void tearDown() throws Exception {
+//        mvc.perform(delete("/users/bob")
+//                .contentType("application/json")).andExpect(status().isOk());
+//        mvc.perform(delete("/users/admin")
+//                .contentType("application/json")).andExpect(status().isOk());
+//    }
+
     @Test
     void signUpUserTest() throws Exception {
         mvc.perform(post("/users/sign-up")
                         .contentType("application/json")
-                        .content(""" 
+                        .content("""
                                  {
                                  "username": "bob",
                                  "password": "bob"
@@ -53,7 +80,7 @@ class ToDoListApplicationTests {
                 .andExpect(status().isOk());
         mvc.perform(post("/users/sign-up")
                         .contentType("application/json")
-                        .content(""" 
+                        .content("""
                                  {
                                  "username": "admin",
                                  "password": "admin"
@@ -68,9 +95,19 @@ class ToDoListApplicationTests {
         Assertions.assertEquals(adminEntity.getRoles(),"ADMIN,USER");
     }
 
+//    @WithMockUser(username = "bob", password = "bob")
 //    @Test
 //    void createUserTaskTest() throws Exception {
-//        mvc.perform(post("/users/{username}/tasks","admin")
+//        mvc.perform(post("/users/sign-up")
+//                        .contentType("application/json")
+//                        .content("""
+//                                 {
+//                                 "username": "bob",
+//                                 "password": "bob"
+//                                 }
+//                                 """))
+//                .andExpect(status().isOk());
+//        mvc.perform(post("/users/{username}/tasks","bob")
 //                        .contentType("application/json")
 //                        .content("""
 //                                 {
@@ -80,7 +117,6 @@ class ToDoListApplicationTests {
 //                                 }
 //                                 """))
 //                .andExpect(status().isOk());
-//
 //    }
 
 }

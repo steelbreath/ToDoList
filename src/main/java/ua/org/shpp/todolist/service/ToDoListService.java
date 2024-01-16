@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static ua.org.shpp.todolist.enums.Status.getAllowedStatuses;
+
 @Service
 public class ToDoListService {
     private final UserRepository userRepository;
@@ -40,7 +42,7 @@ public class ToDoListService {
     public ResponseEntity<UserDTO> signUp(UserConciseDTO userConciseDTO) {
         Optional<UserEntity> exist = userRepository.findByUsername(userConciseDTO.getUsername());
         if (exist.isPresent()) {
-            throw new UsernameAlreadyExistException("username.already.existed");
+            throw new UsernameAlreadyExistException("username.already.existed", userConciseDTO.getUsername());
         }
         UserEntity userEntity = modelMapper.map(userConciseDTO, UserEntity.class);
         if (userConciseDTO.getUsername().equals("admin") && userConciseDTO.getPassword().equals("admin")) {
@@ -54,20 +56,20 @@ public class ToDoListService {
 
     public ResponseEntity<UserDTO> getUser(String username) {
         UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException(username));
         return ResponseEntity.ok(modelMapper.map(userEntity, UserDTO.class));
     }
 
     public void deleteUser(String username) {
         if (userRepository.findByUsername(username).isEmpty()) {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException(username);
         }
         userRepository.deleteUserEntityByUsername(username);
     }
 
     public ResponseEntity<UserDTO> updateUser(String username, UserConciseDTO userConciseDTO) {
         UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException(username));
         if (!username.equals(userConciseDTO.getUsername())) {
             throw new IllegalDataChangeException("user.not.allowed.change.username");
         }
@@ -88,7 +90,7 @@ public class ToDoListService {
     public ResponseEntity<TaskDTO> createTask(String username, TaskConciseDTO task) {
         TaskEntity taskEntity = modelMapper.map(task, TaskEntity.class);
         UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException(username));
         taskEntity.setCreatedAt(LocalDateTime.now());
         taskEntity.setUserEntity(userEntity);
         TaskDTO taskDTO = modelMapper.map(taskRepository.save(taskEntity), TaskDTO.class);
@@ -97,9 +99,9 @@ public class ToDoListService {
 
     public ResponseEntity<TaskDTO> getTask(String username, Long id) {
         UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException(username));
         TaskEntity taskEntity = taskRepository.findById(id)
-                .orElseThrow(TaskNotFoundException::new);
+                .orElseThrow(() -> new TaskNotFoundException(id));
         if (!taskEntity.getUserEntity().equals(userEntity)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "user.not.allowed.get.someones.task", null);
         }
@@ -107,8 +109,9 @@ public class ToDoListService {
     }
 
     public void deleteTask(String username, Long id) {
-        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
-        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
+        UserEntity userEntity = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
         if (!taskEntity.getUserEntity().equals(userEntity)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "user.not.allowed.delete.someones.task", null);
         }
@@ -116,8 +119,9 @@ public class ToDoListService {
     }
 
     public ResponseEntity<TaskDTO> updateTask(String username, Long id, TaskConciseDTO task) {
-        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
-        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
+        UserEntity userEntity = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
         if (!taskEntity.getUserEntity().equals(userEntity)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "user.not.allowed.update.someones.task", null);
         }
@@ -128,11 +132,9 @@ public class ToDoListService {
 
     private void update(TaskEntity taskEntity, TaskConciseDTO task) {
         Status toUpdate = task.getStatus();
-        if (!Status.CONNECTIONS[taskEntity.getStatus().getRowCol()][toUpdate.getRowCol()]) {
-            String first = "user.not.allowed.change.task.status";
-            String second = "to.part";
-            throw new IllegalDataChangeException(first
-                    + taskEntity.getStatus() + second + toUpdate + "!");
+        if (!getAllowedStatuses(taskEntity.getStatus()).contains(toUpdate)) {
+            throw new IllegalDataChangeException("user.not.allowed.change.task.status",
+                    taskEntity.getStatus(), toUpdate);
         }
         taskEntity.setStatus(toUpdate);
         taskEntity.setDeadline(task.getDeadline());
@@ -140,7 +142,8 @@ public class ToDoListService {
     }
 
     public ResponseEntity<List<TaskDTO>> getAllTasks(String username, Pageable pageable) {
-        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+        UserEntity userEntity = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
         Page<TaskEntity> page = taskRepository.findAllByUserEntity(userEntity, pageable);
         List<TaskDTO> tasks = page.map(taskEntity -> modelMapper.map(taskEntity, TaskDTO.class)).getContent();
         if (tasks.isEmpty()) {

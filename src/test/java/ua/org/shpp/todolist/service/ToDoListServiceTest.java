@@ -222,21 +222,16 @@ class ToDoListServiceTest {
                 Arguments.of(Status.PLANNED, Status.PLANNED),
                 Arguments.of(Status.PLANNED, Status.WORK_IN_PROGRESS),
                 Arguments.of(Status.PLANNED, Status.POSTPONED),
-                Arguments.of(Status.PLANNED, Status.NOTIFIED),
-                Arguments.of(Status.PLANNED, Status.SIGNED),
-                Arguments.of(Status.PLANNED, Status.DONE),
                 Arguments.of(Status.PLANNED, Status.CANCELLED),
                 Arguments.of(Status.WORK_IN_PROGRESS, Status.WORK_IN_PROGRESS),
                 Arguments.of(Status.WORK_IN_PROGRESS, Status.POSTPONED),
                 Arguments.of(Status.WORK_IN_PROGRESS, Status.NOTIFIED),
                 Arguments.of(Status.WORK_IN_PROGRESS, Status.SIGNED),
-                Arguments.of(Status.WORK_IN_PROGRESS, Status.DONE),
                 Arguments.of(Status.WORK_IN_PROGRESS, Status.CANCELLED),
                 Arguments.of(Status.POSTPONED, Status.WORK_IN_PROGRESS),
                 Arguments.of(Status.POSTPONED, Status.POSTPONED),
                 Arguments.of(Status.POSTPONED, Status.NOTIFIED),
                 Arguments.of(Status.POSTPONED, Status.SIGNED),
-                Arguments.of(Status.POSTPONED, Status.DONE),
                 Arguments.of(Status.POSTPONED, Status.CANCELLED),
                 Arguments.of(Status.NOTIFIED, Status.NOTIFIED),
                 Arguments.of(Status.NOTIFIED, Status.SIGNED),
@@ -284,7 +279,12 @@ class ToDoListServiceTest {
                 Arguments.of(Status.NOTIFIED, Status.POSTPONED),
                 Arguments.of(Status.NOTIFIED, Status.PLANNED),
                 Arguments.of(Status.POSTPONED, Status.PLANNED),
-                Arguments.of(Status.WORK_IN_PROGRESS, Status.PLANNED)
+                Arguments.of(Status.POSTPONED, Status.DONE),
+                Arguments.of(Status.WORK_IN_PROGRESS, Status.PLANNED),
+                Arguments.of(Status.WORK_IN_PROGRESS, Status.DONE),
+                Arguments.of(Status.PLANNED, Status.NOTIFIED),
+                Arguments.of(Status.PLANNED, Status.SIGNED),
+                Arguments.of(Status.PLANNED, Status.DONE)
         );
     }
 
